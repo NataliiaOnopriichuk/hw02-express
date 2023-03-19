@@ -4,7 +4,9 @@ const { RequestError } = require('../helpers')
 
 const getAll = async (req, res, next) => {
     const { id: owner } = req.user
-    const result = await Contact.find({ owner }, "-__v").populate(
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (page - 1) * limit;
+    const result = await Contact.find({ owner }, "-__v", { skip, limit: Number(limit) }).populate(
         "owner",
         "email subscription"
     )
